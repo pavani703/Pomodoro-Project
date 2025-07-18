@@ -15,6 +15,11 @@ public class UserProfile implements Serializable {
         this.tasks = new ArrayList<>();
     }
 
+    // ✅ Add this getter method
+    public String getUserName() {
+        return name;
+    }
+
     public void addTask(Task task) {
         tasks.add(task);
         System.out.println("✅ Task added!");
