@@ -3,21 +3,35 @@ package PomodoroProject;
 import java.io.*;
 
 public class DataManager {
-    private static final String FILE_NAME = "userdata.ser";
+    private static final String SAVE_DIR = System.getProperty("user.home") + File.separator + "PomodoroData";
 
-    public void saveUser(UserProfile user) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-            oos.writeObject(user);
+    public static void saveUser(UserProfile user) {
+        try {
+            File dir = new File(SAVE_DIR);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File file = new File(dir, user.getUserName() + ".ser");
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+                oos.writeObject(user);
+                System.out.println("💾 Saved to: " + file.getAbsolutePath());
+            }
         } catch (IOException e) {
-            System.out.println("❌ Failed to save user: " + e.getMessage());
+            System.out.println("❌ Save failed: " + e.getMessage());
         }
     }
 
-    public UserProfile loadUser() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            return (UserProfile) ois.readObject();
-        } catch (Exception e) {
-            return null; // No saved user yet
+    public static UserProfile loadUser(String username) {
+        File file = new File(SAVE_DIR, username + ".ser");
+        if (file.exists()) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                System.out.println("📂 Loaded from: " + file.getAbsolutePath());
+                return (UserProfile) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("❌ Load failed: " + e.getMessage());
+            }
         }
+        System.out.println("📄 Creating new profile for: " + username);
+        return new UserProfile(username);
     }
 }
