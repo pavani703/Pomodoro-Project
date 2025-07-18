@@ -1,22 +1,25 @@
 package PomodoroProject;
 
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        DataManager dm = new DataManager();
+
+        // Prompt user for username
+        System.out.print("👤 Enter your username (use the same to continue your progress): ");
+        String username = scanner.nextLine().trim().toLowerCase();
+
+        // Load or create profile
+        UserProfile user = DataManager.loadUser(username);
+
+        // Greet user
+        System.out.println("😊 Welcome to FocusQuest " + username + ", your personal productivity companion! 😊");
+        System.out.println("🚶‍➡️ Small steps every day lead to big results. Stay focused! 💵💰");
+
         PomodoroManager pm = new PomodoroManager();
 
-        UserProfile user = dm.loadUser();
-        System.out.print("👤Enter your name: ");
-        String name = scanner.nextLine();
-        System.out.println("😊 Welcome to FocusQuest "+name+", Your personal productivity companion! 😊");
-        System.out.println("🚶‍➡️Small steps every day lead to big results. Stay focused! 💵💰");
-        if (user == null) {
-            user = new UserProfile(name);
-        }
-
+        // Menu loop
         while (true) {
             System.out.println("\n📋 Menu:");
             System.out.println("1️⃣  View Tasks");
@@ -66,7 +69,7 @@ public class Main {
                 } else if (choice.equals("5")) {
                     user.viewProfile();
                 } else if (choice.equals("6")) {
-                    dm.saveUser(user);
+                    DataManager.saveUser(user);
                     System.out.println("💾 Progress saved. Goodbye!");
                     break;
                 } else {
